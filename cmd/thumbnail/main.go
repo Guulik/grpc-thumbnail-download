@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
+	"thumbnail-proxy/internal/app"
 	"thumbnail-proxy/internal/config"
 	"thumbnail-proxy/internal/lib/logger/handlers/slogpretty"
 )
@@ -21,9 +25,22 @@ func main() {
 		slog.Any("cfg", cfg),
 	)
 
-	//TODO: инициализировать приложение
+	a, err := app.New(cfg, log)
+	if err != nil {
+		panic(err)
+	}
 
-	//TODO: запустить gRPC-сервер приложения
+	go func() {
+		a.GrpcServer.MustRun()
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	<-stop
+
+	a.GrpcServer.Stop()
+
+	fmt.Println("Gracefully stopped")
 }
 
 func setupLogger(env string) *slog.Logger {

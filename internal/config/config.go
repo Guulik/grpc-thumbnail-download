@@ -2,12 +2,16 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"os"
 )
 
 type Config struct {
-	Env string
+	Env       string `yaml:"env"`
+	OutputDir string `yaml:"outputDir"`
+	Address   string `yaml:"address"`
+	Port      int    `yaml:"port"`
 }
 
 func MustLoad() *Config {
@@ -41,4 +45,10 @@ func fetchConfigPath() string {
 	}
 
 	return res
+}
+
+// SetOutputDir изменяет outputDir
+func (c *Config) SetOutputDir(path string) {
+	c.OutputDir = path
+	fmt.Printf("Output directory установлен в: %s\n", c.OutputDir)
 }

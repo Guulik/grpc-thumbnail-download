@@ -1,1 +1,4 @@
 env: "local" # or prod
+outputDir: "./downloads"
+address: "localhost"
+port: 500
