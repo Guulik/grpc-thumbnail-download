@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package thumbnail;
+
+option go_package = "sasha.thumbnail.v1;thumbnailv1";
+
+service Thumbnail{
+  rpc GetThumbnail (ThumbnailRequest) returns (ThumbnailResponse);
+}
+
+message ThumbnailRequest{
+  string URL = 1;
+}
+
+message ThumbnailResponse{
+  bytes thumbnail_data = 1;
+}
