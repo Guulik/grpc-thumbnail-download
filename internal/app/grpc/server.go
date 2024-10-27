@@ -19,7 +19,6 @@ func New(
 	thumbnailService thumbnailgrpc.Thumbnail,
 	port int,
 ) *Server {
-
 	gRPCServer := grpc.NewServer()
 
 	thumbnailgrpc.Register(gRPCServer, thumbnailService)

@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 	"thumbnail-proxy/internal/app"
-	"thumbnail-proxy/internal/config"
+	"thumbnail-proxy/internal/config/server"
 	"thumbnail-proxy/internal/lib/logger/handlers/slogpretty"
 )
 
@@ -17,7 +17,7 @@ const (
 )
 
 func main() {
-	cfg := config.MustLoad()
+	cfg := server.MustLoad()
 
 	log := setupLogger(cfg.Env)
 
@@ -25,10 +25,7 @@ func main() {
 		slog.Any("cfg", cfg),
 	)
 
-	a, err := app.New(cfg, log)
-	if err != nil {
-		panic(err)
-	}
+	a := app.New(cfg, log)
 
 	go func() {
 		a.GrpcServer.MustRun()

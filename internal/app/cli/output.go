@@ -2,10 +2,10 @@ package cli
 
 import (
 	"github.com/spf13/cobra"
-	"thumbnail-proxy/internal/config"
+	"thumbnail-proxy/internal/config/cli"
 )
 
-func (c *CLI) output(cfg *config.Config) *cobra.Command {
+func (c *CLI) output(cfg *cli.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "output [path]",
 		Short: "Set path to save preview",

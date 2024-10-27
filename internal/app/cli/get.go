@@ -2,10 +2,10 @@ package cli
 
 import (
 	"github.com/spf13/cobra"
-	"thumbnail-proxy/internal/config"
 )
 
-func (c *CLI) get(cfg *config.Config) *cobra.Command {
+func (c *CLI) get(outputPath string) *cobra.Command {
+	//TODO: async download
 	panic("implement me")
 	return nil
 }

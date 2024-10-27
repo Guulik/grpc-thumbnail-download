@@ -1,17 +1,16 @@
-package config
+package server
 
 import (
-	"flag"
-	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"os"
+	"time"
 )
 
 type Config struct {
-	Env       string `yaml:"env"`
-	OutputDir string `yaml:"outputDir"`
-	Address   string `yaml:"address"`
-	Port      int    `yaml:"port"`
+	Env     string        `yaml:"env"`
+	Address string        `yaml:"address"`
+	Port    int           `yaml:"port"`
+	Timeout time.Duration `yaml:"timeout"`
 }
 
 func MustLoad() *Config {
@@ -35,20 +34,15 @@ func MustLoad() *Config {
 
 // TODO: reorganize config loading. maybe..
 func fetchConfigPath() string {
-	var res string
+	/*	var res string
 
-	flag.StringVar(&res, "config", "", "path to config file")
-	flag.Parse()
+		flag.StringVar(&res, "config", "", "path to config file")
+		flag.Parse()
 
-	if res == "" {
-		res = os.Getenv("CONFIG_PATH")
-	}
+		if res == "" {
+			res = os.Getenv("CONFIG_PATH")
+		}
 
-	return res
-}
-
-// SetOutputDir изменяет outputDir
-func (c *Config) SetOutputDir(path string) {
-	c.OutputDir = path
-	fmt.Printf("Output directory установлен в: %s\n", c.OutputDir)
+	*/
+	return "config/cli/local.yaml"
 }

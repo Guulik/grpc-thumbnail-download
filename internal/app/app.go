@@ -1,34 +1,26 @@
 package app
 
 import (
-	"fmt"
 	"log/slog"
-	"thumbnail-proxy/internal/app/cli"
 	grpcApp "thumbnail-proxy/internal/app/grpc"
-	"thumbnail-proxy/internal/config"
+	"thumbnail-proxy/internal/config/server"
+	"thumbnail-proxy/internal/service"
 )
 
 type App struct {
-	CliClient  *cli.CLI
 	GrpcServer *grpcApp.Server
 }
 
 func New(
-	cfg *config.Config,
+	cfg *server.Config,
 	log *slog.Logger,
-) (*App, error) {
-	const op = "Server.New"
+) *App {
+	const op = "App.New"
 
-	cliClient, err := cli.New(cfg.Address, cfg, log)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
+	//TODO: implement storage
+	tbService := service.New(log, nil, nil, cfg.Timeout)
 
-	//TODO: implement thumbnailService
-	grpcServer := grpcApp.New(log, nil, cfg.Port)
+	grpcServer := grpcApp.New(log, tbService, cfg.Port)
 
-	return &App{
-		CliClient:  cliClient,
-		GrpcServer: grpcServer,
-	}, nil
+	return &App{GrpcServer: grpcServer}
 }

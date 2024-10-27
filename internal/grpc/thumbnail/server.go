@@ -3,29 +3,35 @@ package thumbnail
 import (
 	"context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"thumbnail-proxy/internal/domain/model"
 	thumbnailv1 "thumbnail-proxy/proto/gen/thumbnail"
 )
 
 type Thumbnail interface {
-	Get(
+	GetThumbnail(
 		ctx context.Context,
 		url string,
-	) (token string, err error)
+	) (model.Thumbnail, error)
 }
 
 type serverAPI struct {
 	thumbnailv1.UnimplementedThumbnailServer
-	thumbnail Thumbnail
+	service Thumbnail
 }
 
-func Register(gRPCServer *grpc.Server, thumbnail Thumbnail) {
-	thumbnailv1.RegisterThumbnailServer(gRPCServer, &serverAPI{thumbnail: thumbnail})
+func Register(gRPCServer *grpc.Server, service Thumbnail) {
+	thumbnailv1.RegisterThumbnailServer(gRPCServer, &serverAPI{service: service})
 }
 
 func (s *serverAPI) Get(
 	ctx context.Context,
 	in *thumbnailv1.ThumbnailRequest,
 ) (*thumbnailv1.ThumbnailResponse, error) {
-	//TODO: implement this
-	panic("implement me")
+	tb, err := s.service.GetThumbnail(ctx, in.GetURL())
+	if err != nil {
+		return nil, status.Error(codes.Internal, "failed to get thumbnail")
+	}
+	return &thumbnailv1.ThumbnailResponse{ThumbnailData: tb.Image}, nil
 }
