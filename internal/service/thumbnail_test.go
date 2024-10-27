@@ -48,6 +48,11 @@ func TestExtractId_BadUrl(t *testing.T) {
 			url:        "https://mail.google.com/mail/u/1/#inbox?projector=1",
 			expectedId: "",
 		},
+		{
+			name:       "gmail with \"v\" key",
+			url:        "https://mail.google.com/mail/u/1/#inbox?&v=_JZDBCDMviw",
+			expectedId: "",
+		},
 	}
 
 	for _, tt := range tests {
