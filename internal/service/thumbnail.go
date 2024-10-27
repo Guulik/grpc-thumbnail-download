@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"regexp"
 	"thumbnail-proxy/internal/domain/model"
 	"thumbnail-proxy/internal/lib/logger/sl"
 	"time"
@@ -45,7 +46,7 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 	//TODO: contextCancel timeout
 	const op = "Service.GetThumbnail"
 
-	log := t.log.With(op)
+	log := t.log.With(slog.String("op", op))
 
 	var (
 		err     error
@@ -102,6 +103,10 @@ func download(ctx context.Context, url string) ([]byte, error) {
 }
 
 func extractId(videoURL string) (string, error) {
+	if err := validateURL(videoURL); err != nil {
+		return "", err
+	}
+
 	u, err := url.Parse(videoURL)
 	if err != nil {
 		fmt.Println("failed to parse url")
@@ -114,4 +119,13 @@ func extractId(videoURL string) (string, error) {
 		return "", fmt.Errorf("%s: %s", "ThumbnailService.extractId", "video ID not found in URL")
 	}
 	return videoID, nil
+}
+
+func validateURL(url string) error {
+	re := regexp.MustCompile(`^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S*)$`)
+	matches := re.FindStringSubmatch(url)
+	if len(matches) < 2 {
+		return fmt.Errorf("%s: %s", "urlValidation", "URL is not valid")
+	}
+	return nil
 }
