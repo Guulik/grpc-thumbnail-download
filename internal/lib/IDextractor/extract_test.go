@@ -1,4 +1,4 @@
-package service
+package IDextractor
 
 import (
 	"github.com/stretchr/testify/require"
@@ -25,7 +25,7 @@ func TestExtractId_Happy(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := extractId(tt.url)
+			id, err := ExtractId(tt.url)
 			require.NoError(t, err)
 			require.Equal(t, tt.expectedId, id)
 		})
@@ -57,7 +57,7 @@ func TestExtractId_BadUrl(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := extractId(tt.url)
+			id, err := ExtractId(tt.url)
 			require.Errorf(t, err, "video ID not found in URL")
 			require.Equal(t, tt.expectedId, id)
 		})
@@ -94,7 +94,7 @@ func TestExtractId_BadRandomSymbols(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := extractId(tt.url)
+			id, err := ExtractId(tt.url)
 			require.Errorf(t, err, "URL is not valid")
 			require.Equal(t, tt.expectedId, id)
 		})

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -30,12 +31,13 @@ func New(
 	}, nil
 }
 
-func (c *CLI) Execute() error {
+func (cli *CLI) Execute() error {
 	const op = "cli.Execute"
 
+	ctx := context.Background()
 	rootCmd := &cobra.Command{Use: "thumbnail"}
-	rootCmd.AddCommand(c.get(c.cfg.OutputDir))
-	rootCmd.AddCommand(c.output(c.cfg))
+	rootCmd.AddCommand(cli.getCommand(ctx))
+	rootCmd.AddCommand(cli.outputCommand(cli.cfg))
 
 	if err := rootCmd.Execute(); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
@@ -44,8 +46,8 @@ func (c *CLI) Execute() error {
 	return rootCmd.Execute()
 }
 
-func (c *CLI) MustExecute() {
-	if err := c.Execute(); err != nil {
+func (cli *CLI) MustExecute() {
+	if err := cli.Execute(); err != nil {
 		panic(err)
 	}
 }

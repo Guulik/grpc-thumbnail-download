@@ -6,9 +6,8 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"net/url"
-	"regexp"
 	"thumbnail-proxy/internal/domain/model"
+	"thumbnail-proxy/internal/lib/IDextractor"
 	"thumbnail-proxy/internal/lib/logger/sl"
 	"time"
 )
@@ -53,7 +52,7 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 		videoId string
 		tb      model.Thumbnail
 	)
-	videoId, err = extractId(URL)
+	videoId, err = IDextractor.ExtractId(URL)
 	if err != nil {
 		log.Error("failed to extract videoID", sl.Err(err))
 		return model.Thumbnail{}, fmt.Errorf("%s: %w", op, err)
@@ -99,32 +98,4 @@ func download(ctx context.Context, url string) ([]byte, error) {
 	}
 
 	return imageData, nil
-}
-
-func extractId(videoURL string) (string, error) {
-	if err := validateURL(videoURL); err != nil {
-		return "", err
-	}
-
-	u, err := url.Parse(videoURL)
-	if err != nil {
-		fmt.Println("failed to parse url")
-		return "", fmt.Errorf("%s: %w", "ThumbnailService.extractId", err)
-	}
-	query := u.Query()
-	videoID := query.Get("v")
-	if videoID == "" {
-		fmt.Println("failed to get videoID")
-		return "", fmt.Errorf("%s: %s", "ThumbnailService.extractId", "video ID not found in URL")
-	}
-	return videoID, nil
-}
-
-func validateURL(url string) error {
-	re := regexp.MustCompile(`^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S*)$`)
-	matches := re.FindStringSubmatch(url)
-	if len(matches) < 2 {
-		return fmt.Errorf("%s: %s", "urlValidation", "URL is not valid")
-	}
-	return nil
 }

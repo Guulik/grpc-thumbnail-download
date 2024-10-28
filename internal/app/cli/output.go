@@ -5,9 +5,9 @@ import (
 	"thumbnail-proxy/internal/config/cli"
 )
 
-func (c *CLI) output(cfg *cli.Config) *cobra.Command {
+func (cli *CLI) outputCommand(cfg *cli.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "output [path]",
+		Use:   "outputCommand [path]",
 		Short: "Set path to save preview",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
