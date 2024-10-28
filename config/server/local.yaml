@@ -2,3 +2,8 @@ env: "local" # or prod
 address: "localhost"
 port: 500
 timeout: 5m
+redis:
+  address: "localhost:6379"
+  password: "6379"
+  DB: 0
+  TTL: 5m

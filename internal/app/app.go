@@ -5,6 +5,7 @@ import (
 	grpcApp "thumbnail-proxy/internal/app/grpc"
 	"thumbnail-proxy/internal/config/server"
 	"thumbnail-proxy/internal/service"
+	"thumbnail-proxy/internal/storage/redis"
 )
 
 type App struct {
@@ -15,10 +16,10 @@ func New(
 	cfg *server.Config,
 	log *slog.Logger,
 ) *App {
-	const op = "App.New"
+	redisClient := redis.InitRedis(cfg)
+	cache := redis.New(log, redisClient, cfg)
 
-	//TODO: implement storage
-	tbService := service.New(log, nil, nil, cfg.Timeout)
+	tbService := service.New(log, cache, cache, cfg.Timeout)
 
 	grpcServer := grpcApp.New(log, tbService, cfg.Port)
 

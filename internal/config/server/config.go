@@ -11,6 +11,14 @@ type Config struct {
 	Address string        `yaml:"address"`
 	Port    int           `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
+	Redis   Redis
+}
+
+type Redis struct {
+	Address  string        `yaml:"address"`
+	Password string        `yaml:"password"`
+	DB       int           `yaml:"DB"`
+	TTL      time.Duration `yaml:"TTL"`
 }
 
 func MustLoad() *Config {

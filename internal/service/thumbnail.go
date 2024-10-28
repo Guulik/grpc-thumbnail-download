@@ -87,7 +87,6 @@ func download(ctx context.Context, url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	// Проверяем, что запрос успешен
 	if resp.StatusCode != http.StatusOK {
 		fmt.Println("failed to get thumbnail")
 		return nil, fmt.Errorf("%s: %w", op, err)
