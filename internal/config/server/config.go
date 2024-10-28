@@ -52,5 +52,5 @@ func fetchConfigPath() string {
 		}
 
 	*/
-	return "config/cli/local.yaml"
+	return "config/server/local.yaml"
 }

@@ -42,7 +42,7 @@ func fetchConfigPath() string {
 		}
 
 	*/
-	return "config/server/local.yaml"
+	return "config/cli/local.yaml"
 }
 
 // SetOutputDir изменяет outputDir

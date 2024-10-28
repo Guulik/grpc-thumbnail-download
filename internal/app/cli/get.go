@@ -12,7 +12,7 @@ import (
 
 func (cli *CLI) getCommand(ctx context.Context) *cobra.Command {
 	return &cobra.Command{
-		Use:   "getCommand [videoURL]",
+		Use:   "get [videoURL]",
 		Short: "Get thumbnail from YouTube video URL",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -24,6 +24,7 @@ func (cli *CLI) getCommand(ctx context.Context) *cobra.Command {
 }
 func (cli *CLI) get(ctx context.Context, videoURL string) error {
 	//TODO: contextCancel timeout
+	//TODO: async download
 	const op = "cli.get"
 
 	req := &thumbnailv1.ThumbnailRequest{URL: videoURL}
