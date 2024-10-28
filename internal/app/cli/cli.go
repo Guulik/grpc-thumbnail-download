@@ -42,8 +42,7 @@ func (cli *CLI) Execute() error {
 	if err := rootCmd.Execute(); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
-
-	return rootCmd.Execute()
+	return nil
 }
 
 func (cli *CLI) MustExecute() {
