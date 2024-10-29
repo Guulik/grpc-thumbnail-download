@@ -3,9 +3,25 @@ package IDextractor
 import (
 	"fmt"
 	"net/url"
-	"regexp"
 	"strings"
 )
+
+func ExtractId(videoURL string) (string, error) {
+	isRutube := checkRutube(videoURL)
+	var (
+		videoId string
+		err     error
+	)
+	if isRutube {
+		videoId, err = ExtractIdRutube(videoURL)
+	} else {
+		videoId, err = ExtractIdYoutube(videoURL)
+	}
+	if err != nil {
+		return "", err
+	}
+	return videoId, nil
+}
 
 func ExtractIdYoutube(videoURL string) (string, error) {
 	/*	if err := validateURL(videoURL); err != nil {
@@ -50,7 +66,7 @@ func ExtractIdRutube(videoURL string) (string, error) {
 	return videoID, nil
 }
 
-func CheckRutube(videoURL string) bool {
+func checkRutube(videoURL string) bool {
 	u, err := url.Parse(videoURL)
 	if err != nil {
 		fmt.Println("failed to parse url")
@@ -58,17 +74,7 @@ func CheckRutube(videoURL string) bool {
 	}
 
 	if u.Host == "rutube.ru" {
-		fmt.Println("url is not from rutube")
 		return true
 	}
 	return false
-}
-
-func validateURL(url string) error {
-	re := regexp.MustCompile(`^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S*)$`)
-	matches := re.FindStringSubmatch(url)
-	if len(matches) < 2 {
-		return fmt.Errorf("%s: %s(%s)", "urlValidation", "URL is not valid", url)
-	}
-	return nil
 }

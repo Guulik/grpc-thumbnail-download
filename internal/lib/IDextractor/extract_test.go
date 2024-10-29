@@ -48,11 +48,16 @@ func TestExtractIdRutube_Happy(t *testing.T) {
 			url:        "https://rutube.ru/video/f2c76f1ba065b955181c546df546071b/",
 			expectedId: "f2c76f1ba065b955181c546df546071b",
 		},
+		{
+			name:       "утопия шов",
+			url:        "https://rutube.ru/video/2d4f195278b9e1381e6cb983a114d389/",
+			expectedId: "f2c76f1ba065b955181c546df546071b",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := ExtractIdRutube(tt.url)
+			id, err := ExtractId(tt.url)
 			require.NoError(t, err)
 			require.Equal(t, tt.expectedId, id)
 		})

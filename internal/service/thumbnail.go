@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"thumbnail-proxy/internal/domain/model"
 	"thumbnail-proxy/internal/lib/IDextractor"
@@ -51,21 +50,8 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 		videoId string
 		tb      model.Thumbnail
 	)
-	isRutube := IDextractor.CheckRutube(URL)
-	if isRutube {
-		videoId, err = IDextractor.ExtractIdRutube(URL)
-		if err != nil {
-			log.Error("failed to extract videoID from Rutube", sl.Err(err))
-			return model.Thumbnail{}, fmt.Errorf("%s: %w", op, err)
-		}
-	} else {
-		videoId, err = IDextractor.ExtractIdYoutube(URL)
-		if err != nil {
-			log.Error("failed to extract videoID from Youtube", sl.Err(err))
-			return model.Thumbnail{}, fmt.Errorf("%s: %w", op, err)
-		}
-	}
 
+	videoId, err = IDextractor.ExtractId(URL)
 	tb, err = t.cacheTbProvider.Thumbnail(ctx, videoId)
 	if err == nil {
 		//TODO: maybe update in cache
@@ -74,7 +60,7 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 
 	var tbData []byte
 	log.Info("Trying to download img from video: ", URL)
-	tbData, err = downloader.Download(ctx, videoId, isRutube)
+	tbData, err = downloader.Download(ctx, videoId)
 	if err != nil {
 		return model.Thumbnail{}, err
 	}

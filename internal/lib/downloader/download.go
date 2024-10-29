@@ -12,7 +12,7 @@ import (
 	"thumbnail-proxy/internal/lib/logger/sl"
 )
 
-func Download(ctx context.Context, videoId string, isRutube bool) ([]byte, error) {
+func Download(ctx context.Context, videoId string) ([]byte, error) {
 	//TODO: contextCancel timeout
 	const op = "Downloader.download"
 
@@ -20,9 +20,11 @@ func Download(ctx context.Context, videoId string, isRutube bool) ([]byte, error
 	log = log.With(slog.String("op", op))
 
 	var url string
-	if isRutube {
+	if len(videoId) > 15 {
+		//У рутуба ID роликов состоит из 30 символов
 		url = fmt.Sprintf("https://rutube.ru/api/video/%s/thumbnail/?redirect=1", videoId)
 	} else {
+		//У youtube ID роликов состоит из 11 символов
 		url = fmt.Sprintf("https://img.youtube.com/vi/%s/maxresdefault.jpg", videoId)
 	}
 
