@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"thumbnail-proxy/internal/config/cli"
-	"thumbnail-proxy/proto/gen/thumbnail"
+	thumbnailv1 "thumbnail-proxy/proto/gen/thumbnail"
 )
 
 type CLI struct {
@@ -31,10 +31,9 @@ func New(
 	}, nil
 }
 
-func (cli *CLI) Execute() error {
+func (cli *CLI) Execute(ctx context.Context) error {
 	const op = "cli.Execute"
 
-	ctx := context.Background()
 	rootCmd := &cobra.Command{Use: "thumbnail"}
 	rootCmd.AddCommand(cli.getCommand(ctx))
 	rootCmd.AddCommand(cli.outputCommand(cli.cfg))
@@ -42,12 +41,5 @@ func (cli *CLI) Execute() error {
 	if err := rootCmd.Execute(); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
-
-	return rootCmd.Execute()
-}
-
-func (cli *CLI) MustExecute() {
-	if err := cli.Execute(); err != nil {
-		panic(err)
-	}
+	return nil
 }

@@ -2,12 +2,10 @@ package service
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"log/slog"
-	"net/http"
 	"thumbnail-proxy/internal/domain/model"
 	"thumbnail-proxy/internal/lib/IDextractor"
+	"thumbnail-proxy/internal/lib/downloader"
 	"thumbnail-proxy/internal/lib/logger/sl"
 	"time"
 )
@@ -52,12 +50,8 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 		videoId string
 		tb      model.Thumbnail
 	)
-	videoId, err = IDextractor.ExtractId(URL)
-	if err != nil {
-		log.Error("failed to extract videoID", sl.Err(err))
-		return model.Thumbnail{}, fmt.Errorf("%s: %w", op, err)
-	}
 
+	videoId, err = IDextractor.ExtractId(URL)
 	tb, err = t.cacheTbProvider.Thumbnail(ctx, videoId)
 	if err == nil {
 		//TODO: maybe update in cache
@@ -65,37 +59,17 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 	}
 
 	var tbData []byte
-	tbData, err = download(ctx, URL)
+	log.Info("Trying to download img from video: ", URL)
+	tbData, err = downloader.Download(ctx, videoId)
+	if err != nil {
+		return model.Thumbnail{}, err
+	}
+	log.Info("image data:", tbData)
 
 	thumbnail := model.Thumbnail{VideoId: videoId, Image: tbData}
 	err = t.cacheTbSaver.SaveThumbnail(ctx, thumbnail, videoId)
 	if err != nil {
-		log.Error("failed to save videoID", sl.Err(err))
+		log.Warn("failed to save thumbnail", sl.Err(err))
 	}
 	return thumbnail, nil
-}
-
-func download(ctx context.Context, url string) ([]byte, error) {
-	//TODO: contextCancel timeout
-	const op = "ThumbnailService.download"
-
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println("failed to get thumbnail")
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		fmt.Println("failed to get thumbnail")
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-	imageData, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("failed to read thumbnail image data")
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-
-	return imageData, nil
 }

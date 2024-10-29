@@ -31,9 +31,9 @@ func main() {
 		a.GrpcServer.MustRun()
 	}()
 
-	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
-	<-stop
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, syscall.SIGTERM, syscall.SIGINT)
+	<-shutdown
 
 	a.GrpcServer.Stop()
 

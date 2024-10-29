@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=6379
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  thumbnail:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: thumbnail_service
+    depends_on:
+      - redis
+    ports:
+      - "500:500"
+    networks:
+      - app-network
+    volumes:
+      - ./config/server/local.yaml:/app/config/server/local.yaml
+
+networks:
+  app-network:
+    driver: bridge

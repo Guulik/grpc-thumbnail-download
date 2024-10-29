@@ -17,9 +17,41 @@ func TestExtractId_Happy(t *testing.T) {
 			expectedId: "EURjTg5fw-E",
 		},
 		{
+			name:       "fluid",
+			url:        "https://www.youtube.com/watch?v=uFPuYg4QjL4",
+			expectedId: "uFPuYg4QjL4",
+		},
+		{
 			name:       "drobushevkii",
 			url:        "https://www.youtube.com/watch?v=_JZDBCDMviw",
 			expectedId: "_JZDBCDMviw",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			id, err := ExtractIdYoutube(tt.url)
+			require.NoError(t, err)
+			require.Equal(t, tt.expectedId, id)
+		})
+	}
+}
+
+func TestExtractIdRutube_Happy(t *testing.T) {
+	tests := []struct {
+		name       string
+		url        string
+		expectedId string
+	}{
+		{
+			name:       "котята",
+			url:        "https://rutube.ru/video/f2c76f1ba065b955181c546df546071b/",
+			expectedId: "f2c76f1ba065b955181c546df546071b",
+		},
+		{
+			name:       "утопия шов",
+			url:        "https://rutube.ru/video/2d4f195278b9e1381e6cb983a114d389/",
+			expectedId: "f2c76f1ba065b955181c546df546071b",
 		},
 	}
 
@@ -43,6 +75,7 @@ func TestExtractId_BadUrl(t *testing.T) {
 			url:        "https://yandex.ru/search/?clid=2358536&text=selectel&l10n=ru&lr=213",
 			expectedId: "",
 		},
+
 		{
 			name:       "gmail",
 			url:        "https://mail.google.com/mail/u/1/#inbox?projector=1",
@@ -57,7 +90,7 @@ func TestExtractId_BadUrl(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := ExtractId(tt.url)
+			id, err := ExtractIdYoutube(tt.url)
 			require.Errorf(t, err, "video ID not found in URL")
 			require.Equal(t, tt.expectedId, id)
 		})
@@ -94,7 +127,7 @@ func TestExtractId_BadRandomSymbols(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := ExtractId(tt.url)
+			id, err := ExtractIdYoutube(tt.url)
 			require.Errorf(t, err, "URL is not valid")
 			require.Equal(t, tt.expectedId, id)
 		})
