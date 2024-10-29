@@ -64,7 +64,6 @@ func (t *ThumbnailService) GetThumbnail(ctx context.Context, URL string) (model.
 	if err != nil {
 		return model.Thumbnail{}, err
 	}
-	log.Info("image data:", tbData)
 
 	thumbnail := model.Thumbnail{VideoId: videoId, Image: tbData}
 	err = t.cacheTbSaver.SaveThumbnail(ctx, thumbnail, videoId)

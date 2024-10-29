@@ -31,15 +31,18 @@ func New(
 	}, nil
 }
 
-func (cli *CLI) Execute(ctx context.Context) error {
+func (cli *CLI) Execute(ctx context.Context) {
 	const op = "cli.Execute"
 
-	rootCmd := &cobra.Command{Use: "thumbnail"}
+	rootCmd := &cobra.Command{
+		Use:          "thumbnail",
+		SilenceUsage: true,
+	}
 	rootCmd.AddCommand(cli.getCommand(ctx))
 	rootCmd.AddCommand(cli.outputCommand(cli.cfg))
+	err := rootCmd.Execute()
 
-	if err := rootCmd.Execute(); err != nil {
-		return fmt.Errorf("%s: %w", op, err)
+	if err != nil {
+		fmt.Println(err)
 	}
-	return nil
 }

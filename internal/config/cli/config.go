@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"gopkg.in/yaml.v3"
 	"os"
 )
 
@@ -47,6 +48,16 @@ func fetchConfigPath() string {
 
 // SetOutputDir изменяет outputDir
 func (c *Config) SetOutputDir(path string) {
-	c.OutputDir = path
-	fmt.Printf("Output directory установлен в: %s\n", c.OutputDir)
+	cfg := MustLoad()
+
+	cfg.OutputDir = path
+
+	data, err := yaml.Marshal(cfg)
+	if err != nil {
+		fmt.Println("failed to set output dir", err)
+	}
+
+	if err = os.WriteFile(fetchConfigPath(), data, os.ModePerm); err != nil {
+		fmt.Println("failed to save config")
+	}
 }

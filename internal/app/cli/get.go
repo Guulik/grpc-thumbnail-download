@@ -88,6 +88,7 @@ func (cli *CLI) saveThumbnail(videoID string, imageData []byte) error {
 	const op = "cli.saveThumbnail"
 
 	outputPath := filepath.Join(cli.cfg.OutputDir, fmt.Sprintf("%s_thumbnail.jpg", videoID))
+	fmt.Println("outputPath:", cli.cfg.OutputDir)
 
 	if err := os.MkdirAll(cli.cfg.OutputDir, os.ModePerm); err != nil {
 		fmt.Println("failed to create output directory:")

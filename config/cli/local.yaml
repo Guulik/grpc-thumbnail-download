@@ -1,2 +1,2 @@
-address: "localhost:500"
-outputDir: "./downloads"
+address: localhost:500
+outputDir: ./downloads
