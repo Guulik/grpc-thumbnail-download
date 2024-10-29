@@ -15,27 +15,14 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: thumbnail_service
-    command: ["go", "run", "cmd/thumbnail/main.go"]
-    stdin_open: true
-    tty: true
     depends_on:
       - redis
+    ports:
+      - "500:500"
     networks:
       - app-network
-
-# cli:
-#   build:
-#     context: .
-#     dockerfile: Dockerfile
-#   command: ["go", "run", "cmd/cli/main.go"]
-#   depends_on:
-#     - grpc-server
-#   networks:
-#     - app-network
-#   volumes:
-#     - ./downloads:/app/downloads
-#   stdin_open: true
-#   tty: true
+    volumes:
+      - ./config/server/local.yaml:/app/config/server/local.yaml
 
 networks:
   app-network:

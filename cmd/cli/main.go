@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"thumbnail-proxy/internal/app/cli"
 	clicfg "thumbnail-proxy/internal/config/cli"
 )
@@ -13,5 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	cliClient.MustExecute()
+	if err = cliClient.Execute(context.Background()); err != nil {
+		fmt.Println(err)
+	}
 }

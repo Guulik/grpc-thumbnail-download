@@ -7,8 +7,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o /app/thumbnail-server ./cmd/thumbnail
+RUN go build -o /app/server ./cmd/thumbnail/main.go
 
-EXPOSE 50051
+EXPOSE 500
 
-CMD ["/app/thumbnail-server"]
+CMD ["./server"]

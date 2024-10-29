@@ -31,10 +31,9 @@ func New(
 	}, nil
 }
 
-func (cli *CLI) Execute() error {
+func (cli *CLI) Execute(ctx context.Context) error {
 	const op = "cli.Execute"
 
-	ctx := context.Background()
 	rootCmd := &cobra.Command{Use: "thumbnail"}
 	rootCmd.AddCommand(cli.getCommand(ctx))
 	rootCmd.AddCommand(cli.outputCommand(cli.cfg))
@@ -43,10 +42,4 @@ func (cli *CLI) Execute() error {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	return nil
-}
-
-func (cli *CLI) MustExecute() {
-	if err := cli.Execute(); err != nil {
-		panic(err)
-	}
 }
