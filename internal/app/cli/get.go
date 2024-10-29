@@ -34,7 +34,7 @@ func (cli *CLI) get(ctx context.Context, videoURL string) error {
 		return fmt.Errorf("%s:%w", op, err)
 	}
 
-	videoID, err := IDextractor.ExtractId(videoURL)
+	videoID, err := IDextractor.ExtractIdYoutube(videoURL)
 	outputPath := filepath.Join(cli.cfg.OutputDir, fmt.Sprintf("%s_thumbnail.jpg", videoID))
 
 	if err = os.MkdirAll(cli.cfg.OutputDir, os.ModePerm); err != nil {

@@ -25,7 +25,7 @@ func Register(gRPCServer *grpc.Server, service Thumbnail) {
 	thumbnailv1.RegisterThumbnailServer(gRPCServer, &serverAPI{service: service})
 }
 
-func (s *serverAPI) Get(
+func (s *serverAPI) GetThumbnail(
 	ctx context.Context,
 	in *thumbnailv1.ThumbnailRequest,
 ) (*thumbnailv1.ThumbnailResponse, error) {

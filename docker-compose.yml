@@ -10,11 +10,14 @@ services:
     networks:
       - app-network
 
-  grpc-server:
+  thumbnail:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: thumbnail_service
     command: ["go", "run", "cmd/thumbnail/main.go"]
+    stdin_open: true
+    tty: true
     depends_on:
       - redis
     networks:

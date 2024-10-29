@@ -5,8 +5,11 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"thumbnail-proxy/internal/app"
+	"thumbnail-proxy/internal/app/cli"
+	clicfg "thumbnail-proxy/internal/config/cli"
 	"thumbnail-proxy/internal/config/server"
 	"thumbnail-proxy/internal/lib/logger/handlers/slogpretty"
 )
@@ -27,8 +30,22 @@ func main() {
 
 	a := app.New(cfg, log)
 
+	var wg sync.WaitGroup
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		a.GrpcServer.MustRun()
+	}()
+	wg.Wait()
+
+	cliCfg := clicfg.MustLoad()
+	cliClient, err := cli.New(cliCfg)
+	if err != nil {
+		panic(err)
+	}
+
+	go func() {
+		cliClient.MustExecute()
 	}()
 
 	stop := make(chan os.Signal, 1)

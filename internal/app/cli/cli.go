@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"thumbnail-proxy/internal/config/cli"
-	"thumbnail-proxy/proto/gen/thumbnail"
+	thumbnailv1 "thumbnail-proxy/proto/gen/thumbnail"
 )
 
 type CLI struct {

@@ -7,13 +7,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o grpc-server ./cmd/thumbnail
-RUN go build -o cli ./cmd/cli
+RUN go build -o /app/thumbnail-server ./cmd/thumbnail
 
-# Финальный контейнер
-FROM alpine:latest
+EXPOSE 50051
 
-COPY --from=builder grpc-server grpc-server
-COPY --from=builder cli cli
-
-CMD ["/usr/local/bin/server"]
+CMD ["/app/thumbnail-server"]
